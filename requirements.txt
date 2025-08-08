@@ -1,6 +1,17 @@
+# FastAPI: The web framework for building APIs
 fastapi
+
+# Uvicorn: ASGI server for running FastAPI applications
 uvicorn
+
+# SQLAlchemy: ORM for database interactions
 sqlalchemy
+
+# Pydantic: Data validation and settings management
 pydantic
-"passlib[bcrypt]"
+
+# Passlib with bcrypt: Secure password hashing
+passlib[bcrypt]
+
+# python-jose with cryptography: JWT creation and verification
 python-jose[cryptography]

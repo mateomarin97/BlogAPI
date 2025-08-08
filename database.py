@@ -1,37 +1,35 @@
-#from sqlmodel import Field, Session, SQLModel, create_engine, select
-#from typing import Annotated
-#from fastapi import Depends
-
-#sqlite_file_name = "blog.db"
-#sqlite_url = f"sqlite:///./{sqlite_file_name}"
-
-#connect_args = {"check_same_thread": False}
-#engine = create_engine(sqlite_url, connect_args=connect_args)
-
-#def create_db_and_tables():
-    #SQLModel.metadata.create_all(engine)
-
-
-#def get_session():
-    #with Session(engine) as session:
-        #yield session
-
-
-#SessionDep = Annotated[Session, Depends(get_session)]
-
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
+# SQLite database URL for SQLAlchemy
 SQLALCHEMY_DATABASE_URL = "sqlite:///./BlogAPI/blog.db"
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
+# Create the SQLAlchemy engine
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL,
+    connect_args={"check_same_thread": False}  # Needed for SQLite
+)
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# Create a configured "Session" class
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine
+)
 
+# Base class for declarative models
 Base = declarative_base()
 
 def get_db():
+    """
+    Dependency that provides a SQLAlchemy database session.
+
+    Yields:
+        Session: SQLAlchemy database session.
+
+    Ensures the session is closed after use.
+    """
     db = SessionLocal()
     try:
         yield db
