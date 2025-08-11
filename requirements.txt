@@ -15,3 +15,6 @@ passlib[bcrypt]
 
 # python-jose with cryptography: JWT creation and verification
 python-jose[cryptography]
+
+# python-multipart: For handling form data (e.g., file uploads) in FastAPI
+python-multipart
