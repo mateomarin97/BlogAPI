@@ -6,7 +6,7 @@ from BlogAPI.database import get_db
 from BlogAPI.repository import user as user_repo
 
 router = APIRouter(
-    prefix="/user",
+    prefix="/users",
     tags=["Users"]
 )
 

@@ -7,6 +7,8 @@ class BlogBase(BaseModel):
     """
     title: str
     body: str
+    published: bool = True
+    rating: Optional[int] = None
 
 class Blog(BlogBase):
     """

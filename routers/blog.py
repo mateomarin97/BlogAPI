@@ -8,7 +8,7 @@ from BlogAPI.repository import blog as blog_repo
 from BlogAPI.oauth2 import get_current_token
 
 router = APIRouter(
-    prefix="/blog",
+    prefix="/blogs",
     tags=["Blogs"]
 )
 
@@ -45,7 +45,7 @@ def get_blogs(
     current_token: schemas.TokenData = Depends(get_current_token)
 ):
     """
-    Retrieve all blogs.
+    Retrieve all published blogs and all unpublished blogs belonging to the current user.
 
     Args:
         db (Session): SQLAlchemy database session.
@@ -54,7 +54,8 @@ def get_blogs(
     Returns:
         List[schemas.ShowBlog]: List of all blogs.
     """
-    return blog_repo.get_all_blogs(db)
+    user_id = get_current_user_id(current_token, db)
+    return blog_repo.get_all_blogs(db, user_id)
 
 @router.post(
     "/",
@@ -156,4 +157,5 @@ def get_blog(
     Returns:
         schemas.ShowBlog: The requested blog object.
     """
-    return blog_repo.get_blog(id, db)
+    user_id = get_current_user_id(current_token, db)
+    return blog_repo.get_blog(id, db, user_id)

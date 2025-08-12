@@ -1,5 +1,5 @@
 # FastAPI: The web framework for building APIs
-fastapi
+fastapi[standard]
 
 # Uvicorn: ASGI server for running FastAPI applications
 uvicorn

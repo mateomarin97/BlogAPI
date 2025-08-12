@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Boolean, Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from BlogAPI.database import Base
 
@@ -18,6 +18,8 @@ class Blog(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, nullable=False)
     body = Column(String, nullable=False)
+    published = Column(Boolean, default=True)
+    rating = Column(Integer, nullable=True)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     
     creator = relationship("User", back_populates="blogs")
