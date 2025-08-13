@@ -18,3 +18,6 @@ python-jose[cryptography]
 
 # python-multipart: For handling form data (e.g., file uploads) in FastAPI
 python-multipart
+
+# PostgreSQL database adapter for Python (used if connecting to a PostgreSQL database)
+psycopg2

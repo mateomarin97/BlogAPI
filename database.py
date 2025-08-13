@@ -2,14 +2,26 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-# SQLite database URL for SQLAlchemy
-SQLALCHEMY_DATABASE_URL = "sqlite:///./BlogAPI/blog.db"
+database_type = "SQLite"
 
-# Create the SQLAlchemy engine
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL,
-    connect_args={"check_same_thread": False}  # Needed for SQLite
-)
+if database_type == "SQLite":
+    # SQLite database URL for SQLAlchemy
+    # Can be left as it is, if no blog.db file is found it shall be created automatically
+    SQLALCHEMY_DATABASE_URL = "sqlite:///./BlogAPI/blog.db"
+    # Create the SQLAlchemy engine
+    engine = create_engine(
+        SQLALCHEMY_DATABASE_URL,
+        connect_args={"check_same_thread": False}  # Needed for SQLite
+    )
+elif database_type == "PostgreSQL":
+    # Postgres database URL for SQLAlchemy
+    # Here you will have to provide the correct database URL depending on your setup
+    SQLALCHEMY_DATABASE_URL = "postgresql://postgres:<password>@localhost:5432/APIBlog"
+    engine = create_engine(
+        SQLALCHEMY_DATABASE_URL
+    )
+else:
+    raise ValueError("Unsupported database type.")
 
 # Create a configured "Session" class
 SessionLocal = sessionmaker(
