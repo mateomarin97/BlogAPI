@@ -14,11 +14,9 @@ def create(request: schemas.User, db: Session):
     Returns:
         models.User: The newly created user object.
     """
-    hashed_password = Hash.bcrypt(request.password)
+    request.password = Hash.bcrypt(request.password)
     new_user = models.User(
-        name=request.name,
-        email=request.email,
-        password=hashed_password
+        **request.model_dump()
     )
     db.add(new_user)
     db.commit()

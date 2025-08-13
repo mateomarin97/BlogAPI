@@ -25,7 +25,8 @@ def get_blog(id: int, db: Session, user_id: int):
 
 def create_blog(request: schemas.Blog, db: Session, user_id: int):
     """Create a new blog linked to the given user ID."""
-    new_blog = models.Blog(title=request.title, body=request.body, user_id=user_id, published=request.published, rating=request.rating)
+    # request.model_dump() gives us the blog data as a dictionary
+    new_blog = models.Blog(**request.model_dump(), user_id=user_id)
     db.add(new_blog)
     db.commit()
     db.refresh(new_blog)
@@ -41,14 +42,13 @@ def delete_blog(id: int, db: Session, user_id: int):
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 def update_blog(id: int, request: schemas.Blog, db: Session, user_id: int):
-    """Update a blog's title and body if the requesting user is the owner."""
+    """Update a blog's fields if the requesting user is the owner."""
     blog = get_blog(id, db, user_id)
     if blog.user_id != user_id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized to update this blog")
-    blog.title = request.title
-    blog.body = request.body
-    blog.published = request.published
-    blog.rating = request.rating
+    update_data = request.model_dump()
+    for key, value in update_data.items():
+        setattr(blog, key, value)
     db.commit()
     db.refresh(blog)
     return blog
