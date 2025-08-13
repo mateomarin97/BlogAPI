@@ -10,7 +10,6 @@ class BlogBase(BaseModel):
     body: str
     published: bool = True
     rating: Optional[int] = None
-    created_at: Optional[datetime] = None  # Use datetime for proper serialization
 
 class Blog(BlogBase):
     """
@@ -48,6 +47,7 @@ class ShowBlog(BlogBase):
     Schema for displaying a blog with its creator's basic info.
     """
     creator: ShowUserSmall
+    created_at: datetime  # Use datetime for proper serialization
 
     class Config:
         orm_mode = True
