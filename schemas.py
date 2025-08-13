@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from typing import List, Optional
+from datetime import datetime
 
 class BlogBase(BaseModel):
     """
@@ -9,6 +10,7 @@ class BlogBase(BaseModel):
     body: str
     published: bool = True
     rating: Optional[int] = None
+    created_at: Optional[datetime] = None  # Use datetime for proper serialization
 
 class Blog(BlogBase):
     """

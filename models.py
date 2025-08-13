@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, Integer, String, ForeignKey
+from sqlalchemy import TIMESTAMP, Boolean, Column, Integer, String, ForeignKey, func
 from sqlalchemy.orm import relationship
 from BlogAPI.database import Base
 
@@ -18,7 +18,8 @@ class Blog(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, nullable=False)
     body = Column(String, nullable=False)
-    published = Column(Boolean, default=True)
+    published = Column(Boolean, server_default="True")
+    created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
     rating = Column(Integer, nullable=True)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     
