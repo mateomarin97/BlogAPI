@@ -32,6 +32,7 @@ class ShowUserSmall(BaseModel):
     """
     name: str
     email: str
+    created_at: datetime  # Use datetime for proper serialization
 
     class Config:
         orm_mode = True
