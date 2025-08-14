@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from typing import List, Optional
 from datetime import datetime
 
@@ -23,7 +23,7 @@ class User(BaseModel):
     Schema for user creation.
     """
     name: str
-    email: str
+    email: EmailStr
     password: str
 
 class ShowUserSmall(BaseModel):
@@ -31,7 +31,7 @@ class ShowUserSmall(BaseModel):
     Schema for displaying basic user information.
     """
     name: str
-    email: str
+    email: EmailStr
     created_at: datetime  # Use datetime for proper serialization
 
     class Config:
@@ -59,7 +59,7 @@ class Login(BaseModel):
     Schema for user login.
     The email is used as the username.
     """
-    username: str
+    username: EmailStr
     password: str
 
 class Token(BaseModel):
@@ -73,4 +73,4 @@ class TokenData(BaseModel):
     """
     Schema for data extracted from a JWT token.
     """
-    username: Optional[str] = None
+    username: Optional[EmailStr] = None
