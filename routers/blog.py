@@ -12,28 +12,6 @@ router = APIRouter(
     tags=["Blogs"]
 )
 
-def get_current_user_id(current_token: schemas.TokenData, db: Session) -> int:
-    """
-    Retrieve the current user's ID from the token data.
-
-    Args:
-        current_token (schemas.TokenData): The token data containing the username (email).
-        db (Session): SQLAlchemy database session.
-
-    Returns:
-        int: The user's ID.
-
-    Raises:
-        HTTPException: If the user is not found.
-    """
-    user = db.query(models.User).filter(models.User.email == current_token.username).first()
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found"
-        )
-    return user.id
-
 @router.get(
     "/",
     response_model=List[schemas.ShowBlog],
@@ -54,7 +32,7 @@ def get_blogs(
     Returns:
         List[schemas.ShowBlog]: List of all blogs.
     """
-    user_id = get_current_user_id(current_token, db)
+    user_id = current_token.id
     return blog_repo.get_all_blogs(db, user_id)
 
 @router.post(
@@ -79,7 +57,7 @@ def create_blog(
     Returns:
         models.Blog: The created blog object.
     """
-    user_id = get_current_user_id(current_token, db)
+    user_id = current_token.id
     return blog_repo.create_blog(request, db, user_id)
 
 @router.delete(
@@ -104,7 +82,7 @@ def delete_blog(
     Returns:
         None
     """
-    user_id = get_current_user_id(current_token, db)
+    user_id = current_token.id
     return blog_repo.delete_blog(id, db, user_id)
 
 @router.put(
@@ -131,7 +109,7 @@ def update_blog(
     Returns:
         models.Blog: The updated blog object.
     """
-    user_id = get_current_user_id(current_token, db)
+    user_id = current_token.id
     return blog_repo.update_blog(id, request, db, user_id)
 
 @router.get(
@@ -157,5 +135,5 @@ def get_blog(
     Returns:
         schemas.ShowBlog: The requested blog object.
     """
-    user_id = get_current_user_id(current_token, db)
+    user_id = current_token.id
     return blog_repo.get_blog(id, db, user_id)

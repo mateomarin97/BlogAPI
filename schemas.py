@@ -33,6 +33,7 @@ class ShowUserSmall(BaseModel):
     name: str
     email: EmailStr
     created_at: datetime  # Use datetime for proper serialization
+    id : int
 
     class Config:
         orm_mode = True
@@ -74,3 +75,4 @@ class TokenData(BaseModel):
     Schema for data extracted from a JWT token.
     """
     username: Optional[EmailStr] = None
+    id : Optional[int] = None

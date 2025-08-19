@@ -44,7 +44,7 @@ def verify_token(token: str, credentials_exception) -> TokenData:
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception
-        token_data = TokenData(username=username)
+        token_data = TokenData(username=username, id=payload.get("id"))
     except JWTError:
         raise credentials_exception
     return token_data

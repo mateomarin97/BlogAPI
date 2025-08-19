@@ -30,6 +30,6 @@ def generate_jwt_token(request: OAuth2PasswordRequestForm, db: Session) -> schem
         )
 
     expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    token = create_access_token(data={"sub": request.username}, expires_delta=expires)
+    token = create_access_token(data={"sub": request.username, "id": user.id}, expires_delta=expires)
 
     return schemas.Token(access_token=token, token_type="bearer")
