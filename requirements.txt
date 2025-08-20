@@ -21,3 +21,6 @@ python-multipart
 
 # PostgreSQL database adapter for Python (used if connecting to a PostgreSQL database)
 psycopg2
+
+# Pydantic settings management for environment variables.
+pydantic-settings

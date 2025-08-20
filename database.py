@@ -1,8 +1,9 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+from BlogAPI.config import settings
 
-database_type = "SQLite"
+database_type = "PostgreSQL"
 
 if database_type == "SQLite":
     # SQLite database URL for SQLAlchemy
@@ -16,7 +17,7 @@ if database_type == "SQLite":
 elif database_type == "PostgreSQL":
     # Postgres database URL for SQLAlchemy
     # Here you will have to provide the correct database URL depending on your setup
-    SQLALCHEMY_DATABASE_URL = "postgresql://postgres:<password>@localhost:5432/APIBlog"
+    SQLALCHEMY_DATABASE_URL = f"postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}"
     engine = create_engine(
         SQLALCHEMY_DATABASE_URL
     )
