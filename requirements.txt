@@ -24,3 +24,6 @@ psycopg2
 
 # Pydantic settings management for environment variables.
 pydantic-settings
+
+# Alembic for database migrations
+alembic
