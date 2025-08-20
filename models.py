@@ -26,7 +26,12 @@ class Blog(Base):
     user_id = Column(Integer, ForeignKey('users.id', ondelete="CASCADE"), nullable=False)
 
     creator = relationship("User", back_populates="blogs")
-    votes = relationship("Vote", back_populates="blog")
+    votes = relationship(
+        "Vote",
+        back_populates="blog",
+        cascade="all, delete-orphan",   # makes ORM delete related votes
+        passive_deletes=True            # let DB enforce FK ondelete
+    )
 
 class User(Base):
     """
@@ -49,7 +54,12 @@ class User(Base):
     created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
     
     blogs = relationship("Blog", back_populates="creator")
-    votes = relationship("Vote", back_populates="user")
+    votes = relationship(
+        "Vote",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        passive_deletes=True
+    )
     
 class Vote(Base):
     __tablename__ = "votes"
