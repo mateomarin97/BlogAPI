@@ -23,10 +23,10 @@ class Blog(Base):
     body = Column(String, nullable=False)
     published = Column(Boolean, server_default="True")
     created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
-    rating = Column(Integer, nullable=True)
     user_id = Column(Integer, ForeignKey('users.id', ondelete="CASCADE"), nullable=False)
 
     creator = relationship("User", back_populates="blogs")
+    votes = relationship("Vote", back_populates="blog")
 
 class User(Base):
     """
@@ -49,3 +49,13 @@ class User(Base):
     created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
     
     blogs = relationship("Blog", back_populates="creator")
+    votes = relationship("Vote", back_populates="user")
+    
+class Vote(Base):
+    __tablename__ = "votes"
+
+    user_id = Column(Integer, ForeignKey('users.id', ondelete="CASCADE"), nullable=False, primary_key=True)
+    blog_id = Column(Integer, ForeignKey('blogs.id', ondelete="CASCADE"), nullable=False, primary_key=True)
+
+    user = relationship("User", back_populates="votes")
+    blog = relationship("Blog", back_populates="votes")

@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr
-from typing import List, Optional
+from typing import List, Optional, Literal
 from datetime import datetime
 
 class BlogBase(BaseModel):
@@ -9,7 +9,6 @@ class BlogBase(BaseModel):
     title: str
     body: str
     published: bool = True
-    rating: Optional[int] = None
 
 class Blog(BlogBase):
     """
@@ -76,3 +75,13 @@ class TokenData(BaseModel):
     """
     username: Optional[EmailStr] = None
     id : Optional[int] = None
+    
+class Vote(BaseModel):
+    """
+    Schema for creating a vote.
+    """
+    blog_id: int
+    direction: Literal[0, 1]  # 1 for upvote, 0 for removing vote
+
+    class Config:
+        orm_mode = True

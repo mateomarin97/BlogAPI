@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from BlogAPI.database import engine, Base
-from BlogAPI.routers import blog, user, authentication
+from BlogAPI.routers import blog, user, authentication, vote
 
 # Create FastAPI application instance
 app = FastAPI(
@@ -13,6 +13,7 @@ app = FastAPI(
 app.include_router(blog.router)
 app.include_router(user.router)
 app.include_router(authentication.router)
+app.include_router(vote.router)
 
 # Create all database tables (if they don't exist)
 Base.metadata.create_all(bind=engine)
