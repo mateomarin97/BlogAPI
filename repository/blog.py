@@ -61,6 +61,48 @@ def get_blog(id: int, db: Session, user_id: int):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Blog not found")
     return blog
 
+def get_blog_with_votes(id: int, db: Session, user_id: int):
+    """
+    Retrieve a blog with its vote count by ID.
+
+    - Returns published blogs.
+    - Returns unpublished blogs only if they belong to the current user.
+    - Raises 404 if the blog is not found or not accessible.
+
+    Args:
+        id (int): Blog ID to retrieve.
+        db (Session): SQLAlchemy database session.
+        user_id (int): Current user ID.
+
+    Returns:
+        tuple[models.Blog, int]: (Blog, vote_count)
+    """
+    stmt = (
+        select(
+            models.Blog,
+            func.count(models.Vote.blog_id).label("votes")
+        )
+        .join(models.Vote, models.Blog.id == models.Vote.blog_id, isouter=True)
+        .group_by(models.Blog.id)
+        .filter(models.Blog.id == id)
+    )
+
+    result = db.execute(stmt).first()
+
+    if not result:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Blog not found"
+        )
+
+    if not result.Blog.published and result.Blog.user_id != user_id:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Blog not found"
+        )
+
+    return result
+
 def create_blog(request: schemas.Blog, db: Session, user_id: int):
     """Create a new blog linked to the given user ID."""
     # request.model_dump() gives us the blog data as a dictionary

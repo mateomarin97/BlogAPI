@@ -118,7 +118,7 @@ def update_blog(
 @router.get(
     "/{id}",
     status_code=status.HTTP_200_OK,
-    response_model=schemas.ShowBlog,
+    response_model=schemas.BlogWithVotes,
     summary="Get a blog by ID",
     response_description="The requested blog"
 )
@@ -139,4 +139,4 @@ def get_blog(
         schemas.ShowBlog: The requested blog object.
     """
     user_id = current_token.id
-    return blog_repo.get_blog(id, db, user_id)
+    return blog_repo.get_blog_with_votes(id, db, user_id)
