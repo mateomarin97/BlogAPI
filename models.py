@@ -10,6 +10,9 @@ class Blog(Base):
         id (int): Primary key, unique identifier for the blog.
         title (str): Title of the blog post.
         body (str): Content/body of the blog post.
+        published (bool): Indicates if the blog is published.
+        created_at (datetime): Timestamp when the blog was created (set automatically).
+        rating (int, optional): Optional rating for the blog post.
         user_id (int): Foreign key referencing the creator (User).
         creator (User): Relationship to the User who created the blog.
     """
@@ -21,8 +24,8 @@ class Blog(Base):
     published = Column(Boolean, server_default="True")
     created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
     rating = Column(Integer, nullable=True)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-    
+    user_id = Column(Integer, ForeignKey('users.id', ondelete="CASCADE"), nullable=False)
+
     creator = relationship("User", back_populates="blogs")
 
 class User(Base):
@@ -34,6 +37,7 @@ class User(Base):
         name (str): Name of the user.
         email (str): Email address of the user (unique).
         password (str): Hashed password of the user.
+        created_at (datetime): Timestamp when the user was created (set automatically).
         blogs (List[Blog]): Relationship to the blogs created by the user.
     """
     __tablename__ = "users"
