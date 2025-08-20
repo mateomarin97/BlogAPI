@@ -4,7 +4,7 @@ from sqlalchemy import or_, and_
 
 from BlogAPI import schemas, models
 
-def get_all_blogs(db: Session, user_id: int):
+def get_all_blogs(db: Session, user_id: int, limit: int, offset: int):
     """Retrieve all published blogs and all unpublished blogs belonging to the current user."""
     return db.query(models.Blog).filter(
         or_(
@@ -14,7 +14,7 @@ def get_all_blogs(db: Session, user_id: int):
                 models.Blog.user_id == user_id
             )
         )
-    ).all()
+    ).limit(limit).offset(offset).all()
 
 def get_blog(id: int, db: Session, user_id: int):
     """Retrieve a blog by ID or raise 404 if not found."""

@@ -20,7 +20,9 @@ router = APIRouter(
 )
 def get_blogs(
     db: Session = Depends(get_db),
-    current_token: schemas.TokenData = Depends(get_current_token)
+    current_token: schemas.TokenData = Depends(get_current_token),
+    limit: int = 10,
+    offset: int = 0
 ):
     """
     Retrieve all published blogs and all unpublished blogs belonging to the current user.
@@ -33,7 +35,7 @@ def get_blogs(
         List[schemas.ShowBlog]: List of all blogs.
     """
     user_id = current_token.id
-    return blog_repo.get_all_blogs(db, user_id)
+    return blog_repo.get_all_blogs(db, user_id, limit, offset)
 
 @router.post(
     "/",
