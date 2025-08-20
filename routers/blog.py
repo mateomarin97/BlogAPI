@@ -14,7 +14,7 @@ router = APIRouter(
 
 @router.get(
     "/",
-    response_model=List[schemas.ShowBlog],
+    response_model=List[schemas.BlogWithVotes],
     summary="Get all blogs",
     response_description="List of all blogs"
 )

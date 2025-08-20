@@ -1,24 +1,58 @@
 from fastapi import status, HTTPException, Response
 from sqlalchemy.orm import Session
-from sqlalchemy import or_, and_
+from sqlalchemy import or_, and_, func, select
 from typing import Optional
 
 from BlogAPI import schemas, models
 
-def get_all_blogs(db: Session, user_id: int, limit: int, offset: int, search: Optional[str] = None):
-    """Retrieve all published blogs and all unpublished blogs belonging to the current user."""
-    query = db.query(models.Blog).filter(
-        or_(
-            models.Blog.published == True,
-            and_(
-                models.Blog.published == False,
-                models.Blog.user_id == user_id
+def get_all_blogs(
+    db: Session,
+    user_id: int,
+    limit: int,
+    offset: int,
+    search: Optional[str] = None
+):
+    """
+    Retrieve blogs with vote counts.
+
+    Includes:
+    - All published blogs.
+    - All unpublished blogs belonging to the current user.
+
+    Args:
+        db (Session): SQLAlchemy database session.
+        user_id (int): ID of the current user.
+        limit (int): Maximum number of blogs to return.
+        offset (int): Number of blogs to skip.
+        search (Optional[str]): Filter blogs whose titles contain this string.
+
+    Returns:
+        list[tuple[models.Blog, int]]: List of (Blog, vote_count) tuples.
+    """
+    stmt = (
+        select(
+            models.Blog,
+            func.count(models.Vote.blog_id).label("votes")
+        )
+        .join(models.Vote, models.Blog.id == models.Vote.blog_id, isouter=True)
+        .group_by(models.Blog.id)
+        .filter(
+            or_(
+                models.Blog.published,
+                and_(
+                    ~models.Blog.published,
+                    models.Blog.user_id == user_id
+                )
             )
         )
+        .limit(limit)
+        .offset(offset)
     )
+
     if search:
-        query = query.filter(models.Blog.title.contains(search))
-    return query.limit(limit).offset(offset).all()
+        stmt = stmt.filter(models.Blog.title.contains(search))
+
+    return db.execute(stmt).all()
 
 def get_blog(id: int, db: Session, user_id: int):
     """Retrieve a blog by ID or raise 404 if not found."""

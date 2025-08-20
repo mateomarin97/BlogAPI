@@ -53,6 +53,16 @@ class ShowBlog(BlogBase):
     class Config:
         orm_mode = True
         # Allows reading data from ORM objects, not just dicts.
+        
+class BlogWithVotes(BaseModel):
+    """
+    Schema for displaying a blog with its creator's basic info and vote count.
+    """
+    Blog: ShowBlog
+    votes: int
+
+    class Config:
+        orm_mode = True
 
 class Login(BaseModel):
     """
