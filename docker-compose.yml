@@ -1,9 +1,31 @@
 services:
   api:
-    build: .
+    build: . #We are telling docker to build the image from the Dockerfile in the current directory
     ports:
+      #This means we are mapping port 8000 of the host to port 8000 of the container.
       - "8000:8000"
+    volumes:
+      #This syncs the current directory to the container. So all changes we make here are automatically applied in the container.
+      #The ro means read only so the code cannot be changed from the container.
+      - ./:/usr/src/app/BlogAPI:ro
+    #We overwrite the command in the Dockerfile.
+    command: uvicorn BlogAPI.main:app --host 0.0.0.0 --port 8000 --reload
     env_file:
-      - .env
+      - .env #This file contains environment variables for the API service
+    depends_on:
+      - postgres #This means the API service will wait for the postgres service to be ready before starting
     environment:
-      database_hostname: host.docker.internal
+      database_hostname: postgres #This is the hostname of the database service, it is called postgres because that is how we called it in the docker-compose file
+      database_password: password123
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: APIBlog
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data #This mounts a volume to persist the database data
+
+volumes:
+  postgres_data:
