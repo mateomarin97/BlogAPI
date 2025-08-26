@@ -6,7 +6,7 @@ A simple Blog API built with [FastAPI](https://fastapi.tiangolo.com/).
 
 - User registration and authentication with JWT
 - CRUD operations for blog posts
-- SQLite database with SQLAlchemy ORM
+- SQLite or Postgres database with SQLAlchemy ORM and Alembic
 - Password hashing with bcrypt
 - Interactive API documentation (Swagger UI and ReDoc)
 
