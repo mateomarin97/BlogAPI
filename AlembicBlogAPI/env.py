@@ -4,6 +4,12 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
+import sys
+import os
+
+# Get the absolute path of the project root
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+    
 #You want to import the Base from the models file not the database file. Since from models Now Alembic can see our Models.
 from BlogAPI.models import Base
 from BlogAPI.config import settings
