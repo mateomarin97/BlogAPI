@@ -4,6 +4,7 @@ from BlogAPI.main import app
 from BlogAPI.database import get_db, Base
 from BlogAPI.tests.database import engine, TestingSessionLocal
 from BlogAPI.JWTtoken import create_access_token
+from BlogAPI import models
 
 @pytest.fixture()
 def session():
@@ -87,4 +88,32 @@ def authorized_client(client, token):
         "Authorization": f"Bearer {token}"
     }
     return client
+
+@pytest.fixture()
+def test_blogs(test_user, session):
+    """Create test blogs for the test user.
+
+    Args:
+        test_user (dict): The test user data.
+        session (Session): The database session.
+
+    Returns:
+        list: List of created blog objects.
+    """
+    blogs_data = [
+        {"title": "First Blog", "body": "This is the body of the first blog", "user_id": test_user["id"]},
+        {"title": "Second Blog", "body": "This is the body of the second blog", "user_id": test_user["id"]},
+        {"title": "Third Blog", "body": "This is the body of the third blog", "user_id": test_user["id"]}
+    ]
+    
+    def create_blog_model(blog):
+        return models.Blog(**blog)
+    
+    blog_map = map(create_blog_model, blogs_data)
+    blogs = list(blog_map)
+    
+    session.add_all(blogs)
+    session.commit()
+
+    return session.query(models.Blog).order_by(models.Blog.id.asc()).all()
 

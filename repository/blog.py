@@ -52,7 +52,7 @@ def get_all_blogs(
     if search:
         stmt = stmt.filter(models.Blog.title.contains(search))
 
-    return db.execute(stmt).all()
+    return db.execute(stmt.order_by(models.Blog.id.asc())).all()
 
 def get_blog(id: int, db: Session, user_id: int):
     """Retrieve a blog by ID or raise 404 if not found."""
