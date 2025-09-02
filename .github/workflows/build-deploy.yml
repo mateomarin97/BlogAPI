@@ -51,9 +51,8 @@ jobs:
       - name: Create test database
         run: |
           PGPASSWORD=${{ secrets.DATABASE_PASSWORD }} \
-          psql -h localhost -U ${{ secrets.DATABASE_USERNAME }} \
-          -d ${{ secrets.DATABASE_NAME }} \
-          -c "CREATE DATABASE ${{ secrets.DATABASE_NAME }}_test;"
+          psql -h localhost -U ${{ secrets.DATABASE_USERNAME }} -d postgres \
+          -c "CREATE DATABASE \"${{ secrets.DATABASE_NAME }}_test\";"
 
       - name: Run tests
         run: |
