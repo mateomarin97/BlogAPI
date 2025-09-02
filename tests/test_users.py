@@ -2,15 +2,6 @@ import pytest
 from BlogAPI import schemas
 from jose import jwt
 from BlogAPI.config import settings
-from BlogAPI.tests.database import client, session
-
-@pytest.fixture()
-def test_user(client):
-    user_data = {"name": "Nathan", "email": "mateomarin97@hotmail.com", "password": "123"}
-    response = client.post("/users/", json=user_data)
-    assert response.status_code == 201
-    user_data["id"] = response.json().get("id")
-    return user_data
 
 @pytest.mark.parametrize("user_id", [(1),(2),(3)])
 def test_read_users(user_id, client):
