@@ -1,4 +1,4 @@
-from fastapi import status, HTTPException
+from fastapi import status, HTTPException, Response
 from BlogAPI import schemas, models
 from sqlalchemy.orm import Session
 from BlogAPI.hashing import Hash
@@ -44,3 +44,27 @@ def get(id: int, db: Session):
             detail="User not found"
         )
     return user
+
+def delete(id: int, db: Session):
+    """
+    Delete a user by ID.
+
+    Args:
+        id (int): The ID of the user to delete.
+        db (Session): SQLAlchemy database session.
+
+    Returns:
+        None
+
+    Raises:
+        HTTPException: If the user is not found.
+    """
+    user = db.query(models.User).filter(models.User.id == id).first()
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    db.delete(user)
+    db.commit()
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

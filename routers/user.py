@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from BlogAPI import schemas
 from BlogAPI.database import get_db
 from BlogAPI.repository import user as user_repo
+from BlogAPI.oauth2 import get_current_token
 
 router = APIRouter(
     prefix="/users",
@@ -54,3 +55,26 @@ def get_user(
         schemas.ShowUser: The requested user object.
     """
     return user_repo.get(id, db)
+
+@router.delete(
+    "/",
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="Deletes current user",
+    response_description="User deleted successfully"
+)
+def delete_user(
+    db: Session = Depends(get_db),
+    current_token: schemas.TokenData = Depends(get_current_token)
+):
+    """
+    Deletes the currently logged in user.
+
+    Args:
+        db (Session): SQLAlchemy database session.
+        current_token (schemas.TokenData): Token data for authentication.
+
+    Returns:
+        None
+    """
+    user_id = current_token.id
+    user_repo.delete(user_id, db)

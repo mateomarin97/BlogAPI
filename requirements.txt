@@ -27,3 +27,6 @@ pydantic-settings
 
 # Alembic for database migrations
 alembic
+
+# pytest: Testing framework
+pytest
