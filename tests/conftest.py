@@ -134,7 +134,7 @@ def test_blogs(test_user, session):
     return session.query(models.Blog).order_by(models.Blog.id.asc()).all()
 
 @pytest.fixture()
-def test_blogs_other_user(client,session, test_user2):
+def test_blogs_other_user(session, test_user2):
     """Create test blogs for another user.
 
     Args:

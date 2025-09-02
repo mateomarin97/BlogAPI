@@ -1,5 +1,3 @@
-import pytest
-
 def test_upvote_blog(authorized_client, test_blogs):
     response = authorized_client.post(f"/vote/", json={"blog_id": test_blogs[0].id, "direction": 1})
     assert response.status_code == 201
