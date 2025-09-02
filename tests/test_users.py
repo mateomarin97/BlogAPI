@@ -36,3 +36,9 @@ def test_login(client, test_user):
     assert username == test_user["email"]
     assert user_id == test_user["id"]
     assert token.token_type == "bearer"
+    
+def test_incorrect_login(client, test_user):
+    response = client.post("/login", data={"username": test_user["email"], "password": "wrongpassword"})
+    assert response.status_code == 401
+    assert isinstance(response.json(), dict)
+    assert response.json().get("detail") == "Invalid username or password"
