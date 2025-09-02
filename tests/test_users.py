@@ -55,22 +55,29 @@ def override_get_db():
 #This swaps the original get_db with the override for testing
 app.dependency_overrides[get_db] = override_get_db
 
-client = TestClient(app)
+@pytest.fixture()
+def client():
+    """
+    Fixture that provides a test client for the FastAPI application, and sets up the database.
+    """
+    # Create the database tables
+    Base.metadata.create_all(bind=engine)
+    yield TestClient(app)
+    # Drop the database tables
+    Base.metadata.drop_all(bind=engine)
 
 @pytest.mark.parametrize("user_id", [(1),(2),(3)])
-def test_read_users(user_id):
+def test_read_users(user_id, client):
     response = client.get(f"/users/{user_id}")
     assert response.status_code == 200 or response.status_code == 404
     assert isinstance(response.json(), dict)
     if response.status_code == 200:
         assert response.json().get("id") == user_id
         
-def test_create_delete_user():
+def test_create_user(client):
     response = client.post("/users/", json={"name": "Test User", "email": "test@example.com", "password": "testpassword"})
     assert response.status_code == 201
     assert isinstance(response.json(), dict)
     new_user = schemas.ShowUser.model_validate(response.json()) 
     assert new_user.id is not None
     
-    #response = client.delete("/users/")
-    #assert response.status_code == 204
