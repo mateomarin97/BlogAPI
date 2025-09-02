@@ -31,7 +31,7 @@ def create_vote(
         current_token (schemas.TokenData): Token data for authentication.
 
     Returns:
-        models.Vote: The created vote object.
+        json: message indicating the result of the vote creation.
     """
     user_id = current_token.id
     return vote_repo.create_vote(vote, db, user_id)

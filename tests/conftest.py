@@ -61,6 +61,22 @@ def test_user(client):
     return user_data
 
 @pytest.fixture()
+def test_user2(client):
+    """Create a test user.
+
+    Args:
+        client (TestClient): The test client.
+
+    Returns:
+        dict: The created user data.
+    """
+    user_data = {"name": "Nathan", "email": "mateomarin97@gmail.com", "password": "123"}
+    response = client.post("/users/", json=user_data)
+    assert response.status_code == 201
+    user_data["id"] = response.json().get("id")
+    return user_data
+
+@pytest.fixture()
 def token(test_user):
     """Create a test token for the test user.
 
@@ -117,3 +133,30 @@ def test_blogs(test_user, session):
 
     return session.query(models.Blog).order_by(models.Blog.id.asc()).all()
 
+@pytest.fixture()
+def test_blogs_other_user(client,session, test_user2):
+    """Create test blogs for another user.
+
+    Args:
+        session (Session): The database session.
+
+    Returns:
+        list: List of created blog objects.
+    """
+    
+    blogs_data = [
+        {"title": "First Blog", "body": "This is the body of the first blog", "user_id": test_user2["id"]},
+        {"title": "Second Blog", "body": "This is the body of the second blog", "user_id": test_user2["id"]},
+        {"title": "Third Blog", "body": "This is the body of the third blog", "user_id": test_user2["id"]}
+    ]
+    
+    def create_blog_model(blog):
+        return models.Blog(**blog)
+    
+    blog_map = map(create_blog_model, blogs_data)
+    blogs = list(blog_map)
+    
+    session.add_all(blogs)
+    session.commit()
+
+    return session.query(models.Blog).order_by(models.Blog.id.asc()).all()
