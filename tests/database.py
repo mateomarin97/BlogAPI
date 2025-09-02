@@ -14,7 +14,7 @@ if database_type == "SQLite":
         connect_args={"check_same_thread": False}  # Needed for SQLite
     )
 elif database_type == "PostgreSQL":
-    # Postgres database URL for SQLAlchemy
+    # Postgres database URL for SQLAlchemy.
     # Here you will have to provide the correct database URL depending on your setup
     SQLALCHEMY_DATABASE_URL = f"postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}_test"
     engine = create_engine(
