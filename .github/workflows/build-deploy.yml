@@ -26,12 +26,11 @@ jobs:
           POSTGRES_DB: ${{ secrets.DATABASE_NAME }}
         ports:
           - 5432:5432
-        options:
-          healthcheck:
-            test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER"]
-            interval: 10s
-            timeout: 5s
-            retries: 5
+        options: >-
+          --health-cmd="pg_isready -U $POSTGRES_USER"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     runs-on: ubuntu-latest
 
